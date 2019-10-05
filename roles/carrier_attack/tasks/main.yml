@@ -1,0 +1,13 @@
+---
+- block:
+  - name: Start Carrier attack
+    shell: 'docker-compose up -d'
+    args:
+      chdir: /opt/carrier
+    when: action == 'carrier_start'
+
+  - name: Stop Carrier attack
+    shell: 'docker-compose down'
+    args:
+      chdir: /opt/carrier
+    when: action == 'carrier_stop'

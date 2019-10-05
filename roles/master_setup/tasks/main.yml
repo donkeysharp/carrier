@@ -1,0 +1,27 @@
+---
+- block:
+  - name: Install ansible
+    pip:
+      name: ansible
+      state: present
+
+  - name: Add private key
+    copy:
+      src: "{{ ansible_ssh_private_key_file }}"
+      dest: "/home/{{ ansible_user }}/.ssh/id_rsa"
+      mode: 0700
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+
+  - name: Add github to known_hosts
+    shell: ssh-keyscan -H github.com >> /etc/ssh/ssh_known_hosts
+
+  - name: Clone carrier repository
+    git:
+      repo: git@github.com:donkeysharp/carrier.git
+      dest: "/home/{{ ansible_user }}/carrier"
+      clone: yes
+      update: yes
+      force: yes
+    become_user: "{{ ansible_user }}"
+    become: yes

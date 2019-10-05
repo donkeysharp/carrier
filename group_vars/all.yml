@@ -1,0 +1,13 @@
+ansible_user: carrier
+
+master_node:
+  image_id: debian-9-x64 # Debian 9.8
+  name: carrier-master-node
+  region_id: nyc1
+  size_id: s-1vcpu-1gb
+
+worker_node:
+  image_id: debian-9-x64 # Debian 9.8
+  prefix: carrier-worker-node
+  region_id: nyc1
+  size_id: s-1vcpu-1gb

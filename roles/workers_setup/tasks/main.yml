@@ -1,0 +1,46 @@
+---
+- block:
+  - name: Create carrier directory
+    file:
+      path: /opt/carrier
+      state: directory
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: 0755
+
+  - name: Create carrier host directory
+    file:
+      path: "/opt/carrier/{{ ansible_hostname }}"
+      state: directory
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: 0755
+
+  - name: Create carrier containers directories
+    file:
+      path: "/opt/carrier/{{ ansible_hostname }}/doloris-{{ item.name }}"
+      state: directory
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: 0755
+    with_items: "{{ doloris_settings[ansible_hostname]['containers'] }}"
+
+  - name: Add doloris.conf
+    template:
+      src: templates/doloris.conf.j2
+      dest: "/opt/carrier/{{ ansible_hostname }}/doloris-{{ item.name }}/doloris.conf"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: 0655
+    vars:
+      settings: "{{ item }}"
+    with_items:  "{{ doloris_settings[ansible_hostname]['containers'] }}"
+
+  - name: Add docker-compose.yml
+    template:
+      src: templates/docker-compose.yml
+      dest: /opt/carrier/docker-compose.yml
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+    vars:
+      settings: "{{ doloris_settings[ansible_hostname]['containers'] }}"

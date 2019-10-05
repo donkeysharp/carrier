@@ -1,0 +1,35 @@
+---
+- block:
+  - name: Create worker droplets
+    digital_ocean:
+      api_token: "{{ do_api_key }}"
+      backups_enabled: no
+      command: droplet
+      image_id: "{{ droplet.image_id }}"
+      ipv6: no
+      name: "{{ droplet.prefix }}-{{ item }}"
+      unique_name: yes
+      private_networking: no
+      region_id: "{{ droplet.region_id }}"
+      size_id: "{{ droplet.size_id }}"
+      state: "{{ server_state }}"
+      user_data: "{{ lookup('template', 'templates/cloud_init.yml') }}"
+      wait: yes
+    register: do
+    with_sequence: start=1 end={{ number_of_workers }} stride=1
+
+  - name: Add workers to in-memory inventory
+    add_host:
+      name: "{{ item.droplet.ip_address }}"
+      groups: workers
+    when: do.results is defined and server_state == 'present'
+    changed_when: False
+    no_log: True
+    with_items: "{{ do.results }}"
+
+  - name: Wait for ssh to be available
+    local_action: "wait_for port=22 host={{ item.droplet.ip_address }} delay=5"
+    changed_when: False
+    no_log: True
+    with_items: "{{ do.results }}"
+    when: server_state == 'present'

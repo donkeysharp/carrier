@@ -1,0 +1,28 @@
+---
+- block:
+  - name: Update repositories
+    apt:
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: Install common packages
+    apt:
+      name: "{{ item }}"
+      state: present
+    loop:
+    - htop
+    - tmux
+    - apt-transport-https
+    - ca-certificates
+    - net-tools
+    - vim
+    - git
+    - build-essential
+    - curl
+    - wget
+    - software-properties-common
+    - gnupg2
+    - unzip
+    - tar
+    - nmap
+    - python-pip

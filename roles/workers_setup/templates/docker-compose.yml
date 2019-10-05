@@ -1,0 +1,9 @@
+version: '3'
+services:
+{% for item in settings %}
+  doloris-{{ item.name }}:
+    image: donkeysharp/doloris:latest
+    volumes:
+    - /opt/carrier/{{ansible_hostname}}/doloris-{{item.name}}/doloris.conf:/etc/doloris.conf
+
+{% endfor %}

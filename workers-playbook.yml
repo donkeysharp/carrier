@@ -1,0 +1,31 @@
+---
+- hosts: local
+  connection: local
+  become: False
+  roles:
+  - role: workers_server
+    droplet: "{{ worker_node }}"
+    server_state: "{{ param_server_state | default('present') }}"
+    tags:
+    - always
+
+- hosts: workers
+  become: True
+  roles:
+  - role: common
+    tags:
+    - setup
+
+  - role: docker
+    tags:
+    - setup
+
+  - role: workers_setup
+    tags:
+    - setup
+    - provision
+
+  - role: carrier_attack
+    tags:
+    - execution
+

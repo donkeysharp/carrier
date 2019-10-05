@@ -1,0 +1,13 @@
+---
+- hosts: local
+  connection: local
+  become: False
+  roles:
+  - role: master_server
+    droplet: "{{ master_node }}"
+
+- hosts: master
+  become: True
+  roles:
+  - role: common
+  - role: master_setup

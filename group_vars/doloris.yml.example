@@ -1,0 +1,27 @@
+doloris_settings:
+  carrier-worker-node-1:
+    containers:
+    - name: container1
+      targets:
+      - host: target1.example.com
+        scheme: http
+      - host: target2.example.com
+        scheme: https
+    - name: container2
+      targets:
+      - host: target3.example.com
+        scheme: http
+  carrier-worker-node-2:
+    containers:
+    - name: container3
+      targets:
+      - host: target4.example.com
+        scheme: http
+    - name: container4
+      targets:
+      - host: target5.example.com
+        scheme: https
+    - name: container5
+      targets:
+      - host: target6.example.com
+        scheme: https

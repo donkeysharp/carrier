@@ -1,0 +1,28 @@
+---
+- block:
+  - name: Create master droplet
+    digital_ocean:
+      api_token: "{{ do_api_key }}"
+      backups_enabled: no
+      command: droplet
+      image_id: "{{ droplet.image_id }}"
+      ipv6: no
+      name: "{{ droplet.name }}"
+      unique_name: yes
+      private_networking: no
+      region_id: "{{ droplet.region_id }}"
+      size_id: "{{ droplet.size_id }}"
+      state: present
+      user_data: "{{ droplet.user_data }}"
+      wait: yes
+    register: do
+
+  - name: Add master to in-memory inventory
+    add_host:
+      name: "{{ do.droplet.ip_address }}"
+      groups: master
+    when: do.droplet is defined
+    changed_when: False
+
+  - name: Wait for ssh to be available
+    local_action: "wait_for port=22 host={{ do.droplet.ip_address }}"

@@ -1,0 +1,4 @@
+ansible
+docopt
+pycrypto
+dopy
